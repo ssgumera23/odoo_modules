@@ -410,5 +410,10 @@
       <field name="name">Zamboanga del Sur</field>
       <field name="code">PH-ZAS</field>
     </record>
+    <record id="res_country_state_PH_NCR" model="res.country.state">
+      <field model="res.country" name="country_id" search="[('code','=','PH')]" />
+      <field name="name">Metro Manila</field>
+      <field name="code">PH-NCR</field>
+    </record>
   </data>
 </odoo>
