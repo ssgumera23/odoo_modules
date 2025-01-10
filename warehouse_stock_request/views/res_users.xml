@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="custom_res_users" model="ir.ui.view">
+            <field name="name">custom_res_users</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="priority" eval="999"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='login']" position="after">
+                    <label for="allowed_location_ids" string="Allowed Locations"/>
+                    <field name="allowed_location_ids" options="{'no_create': True, 'no_delete': True}"
+                       widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

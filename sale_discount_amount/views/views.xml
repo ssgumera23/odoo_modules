@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="sale_discount_amount.list">
+      <field name="name">sale_discount_amount list</field>
+      <field name="model">sale_discount_amount.sale_discount_amount</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="sale_discount_amount.action_window">
+      <field name="name">sale_discount_amount window</field>
+      <field name="res_model">sale_discount_amount.sale_discount_amount</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="sale_discount_amount.action_server">
+      <field name="name">sale_discount_amount server</field>
+      <field name="model_id" ref="model_sale_discount_amount_sale_discount_amount"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="sale_discount_amount" id="sale_discount_amount.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="sale_discount_amount.menu_1" parent="sale_discount_amount.menu_root"/>
+    <menuitem name="Menu 2" id="sale_discount_amount.menu_2" parent="sale_discount_amount.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="sale_discount_amount.menu_1_list" parent="sale_discount_amount.menu_1"
+              action="sale_discount_amount.action_window"/>
+    <menuitem name="Server to list" id="sale_discount_amount" parent="sale_discount_amount.menu_2"
+              action="sale_discount_amount.action_server"/>
+-->
+  </data>
+</odoo>
