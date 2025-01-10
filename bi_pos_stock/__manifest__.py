@@ -4,10 +4,10 @@
 
 {
     "name": "POS Stock in Odoo",
-    "version": "16.0.0.2",
+    "version": "16.0.0.9",
     "category": "Point of Sale",
     "depends": ['base', 'sale_management', 'stock', 'point_of_sale'],
-    "author": "BrowseInfo",
+    "author": "BROWSEINFO",
     'summary': 'Display POS Stock Quantity on POS screen stock Product stock in POS product stock Quantity POS Order stock POS Mobile POS Inventory management pos stocks pos item stock point of sale stock POS Product Warehouse Quantity pos product qty pos product Quantity',
     'price': 29,
     'currency': "EUR",
@@ -43,7 +43,7 @@
     odoo Product stock on Point of Sale odoo Point of sales product stock odoo
     odoo Point of sale product stock on hand Display product stock on Point of Sale odoo
     """,
-    "website": "https://www.browseinfo.in",
+    "website": "https://www.browseinfo.com/demo-request?app=bi_pos_stock&version=16&edition=Community",
     "data": [
         'views/custom_pos_config_view.xml',
     ],
@@ -53,6 +53,10 @@
             'bi_pos_stock/static/src/js/SyncStock.js',
             'bi_pos_stock/static/src/js/models.js',
             'bi_pos_stock/static/src/js/Chrome.js',
+            'bi_pos_stock/static/src/js/ProductLowStock.js',
+            'bi_pos_stock/static/src/js/LowStockLine.js',
+            'bi_pos_stock/static/src/js/OrderWidget.js',
+            'bi_pos_stock/static/src/js/LowStockProducts.js',
             'bi_pos_stock/static/src/js/Screens/ProductScreen.js',
             'bi_pos_stock/static/src/js/Screens/ProductsWidget.js',
             'bi_pos_stock/static/src/xml/**/*',
@@ -60,7 +64,7 @@
     },
     "auto_install": False,
     "installable": True,
-    "live_test_url": 'https://youtu.be/X1GSrJl9iWY',
+    "live_test_url": 'https://www.browseinfo.com/demo-request?app=bi_pos_stock&version=16&edition=Community',
     "images": ['static/description/Banner.gif'],
     'license': 'OPL-1',
 }

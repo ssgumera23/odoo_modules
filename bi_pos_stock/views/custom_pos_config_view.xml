@@ -22,7 +22,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="col-xs-12 col-md-6 o_setting_box" >
                             <div class="o_setting_right_pane">
                                 <label for="pos_stock_type" string="Stock Type"/>
                                 <div class="text-muted">
@@ -33,18 +33,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="col-xs-12 col-md-6 o_setting_box" >
                             <div class="o_setting_left_pane">
                                 <field name="pos_allow_order"/>
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for="pos_allow_order"/>
                                 <div class="text-muted">
-                                    Allow pos order when product is out of stock stock.
+                                    Allow pos order when product is out of stock.
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('pos_allow_order' ,'=', False)]}">
                             <div class="o_setting_right_pane">
                                 <label for="pos_deny_order" string="Deny pos order"/>
                                 <div class="text-muted">
@@ -52,6 +52,35 @@
                                 </div>
                                 <div class="content-group mt16">
                                     <field name="pos_deny_order"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" >
+                            <div class="o_setting_right_pane">
+                                <label for="stock_position" string="Stock Position"/>
+                                <div class="content-group mt16">
+                                    <field name="stock_position"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" >
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Color Selection</span>
+                                <div class="w-50 row">
+                                    <span class="d-block w-75 py-2">Background Color</span>
+                                    <field name="color_background" class="d-block w-25 p-0 m-0" widget="color"/>
+                                </div>
+                                <div class="w-50 row mt-1">
+                                    <span class="d-block w-75 py-2">Font Color</span>
+                                    <field name="font_background" class="d-block w-25 p-0 m-0" widget="color"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" >
+                            <div class="o_setting_right_pane">
+                                <label for="low_stock" string="Product Low Stock"/>
+                                <div class="content-group mt16">
+                                    <field name="low_stock"/>
                                 </div>
                             </div>
                         </div>

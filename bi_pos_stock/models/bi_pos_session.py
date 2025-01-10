@@ -7,15 +7,11 @@ from odoo import models
 class PosSession(models.Model):
 	_inherit = 'pos.session'
 
-
-
 	def _loader_params_product_product(self):
 		result = super()._loader_params_product_product()
 		result['search_params']['fields'].extend(['type','virtual_available',
 					'qty_available','incoming_qty','outgoing_qty','quant_text'])
 		return result
-
-
 
 	def _pos_ui_models_to_load(self):
 		result = super()._pos_ui_models_to_load()
@@ -23,7 +19,6 @@ class PosSession(models.Model):
 		if new_model not in result:
 			result.append(new_model)
 		return result
-
 
 	def _loader_params_stock_location(self):
 		if (self.config_id.show_stock_location == 'specific'):
@@ -45,6 +40,5 @@ class PosSession(models.Model):
 				}
 			}
 		
-
 	def _get_pos_ui_stock_location(self, params):
 		return self.env['stock.location'].search_read(**params['search_params'])

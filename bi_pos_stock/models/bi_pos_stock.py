@@ -17,12 +17,13 @@ class pos_config(models.Model):
         return self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)],
                                                   limit=1).lot_stock_id
 
-    pos_display_stock = fields.Boolean(string='Display Stock in POS')
-    pos_stock_type = fields.Selection(
-        [('onhand', 'Qty on Hand'), ('incoming', 'Incoming Qty'), ('outgoing', 'Outgoing Qty'),
-         ('available', 'Qty Available')], default='onhand', string='Stock Type', help='Seller can display Different stock type in POS.')
-    pos_allow_order = fields.Boolean(string='Allow POS Order When Product is Out of Stock')
-    pos_deny_order = fields.Char(string='Deny POS Order When Product Qty is goes down to')
+    display_stock = fields.Boolean(string='Display Stock in POS')
+    stock_type = fields.Selection(
+        [('onhand', 'Qty on Hand'),('available', 'Qty Available')], default='onhand', string='Stock Type', help='Seller can display Different stock type in POS.')
+    allow_order = fields.Boolean(string='Allow POS Order When Product is Out of Stock')
+    deny_order = fields.Char(string='Deny POS Order When Product Qty is goes down to')
+    stock_position = fields.Selection(
+        [('top_right', 'Top Right'), ('top_left', 'Top Left'), ('bottom_right', 'Bottom Right')], default='top_left', string='Stock Position')
 
     show_stock_location = fields.Selection([
         ('all', 'All Warehouse'),
@@ -32,21 +33,31 @@ class pos_config(models.Model):
     stock_location_id = fields.Many2one(
         'stock.location', string='Stock Location',
         domain=[('usage', '=', 'internal')], required=True, default=_get_default_location)
-
+    
+    color_background = fields.Char(
+        string='Color',)
+    font_background = fields.Char(
+        string='Font Color',)
+    low_stock = fields.Float(
+        string='Product Low Stock',default=0.00)
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    pos_display_stock = fields.Boolean(related="pos_config_id.pos_display_stock",readonly=False)
-    pos_stock_type = fields.Selection(related="pos_config_id.pos_stock_type", readonly=False,string='Stock Type', help='Seller can display Different stock type in POS.')
-    pos_allow_order = fields.Boolean(string='Allow POS Order When Product is Out of Stock',readonly=False,related="pos_config_id.pos_allow_order")
-    pos_deny_order = fields.Char(string='Deny POS Order When Product Qty is goes down to',readonly=False,related="pos_config_id.pos_deny_order")
+    pos_display_stock = fields.Boolean(related="pos_config_id.display_stock",readonly=False)
+    pos_stock_type = fields.Selection(related="pos_config_id.stock_type", readonly=False,string='Stock Type', help='Seller can display Different stock type in POS.')
+    pos_allow_order = fields.Boolean(string='Allow POS Order When Product is Out of Stock',readonly=False,related="pos_config_id.allow_order")
+    pos_deny_order = fields.Char(string='Deny POS Order When Product Qty is goes down to',readonly=False,related="pos_config_id.deny_order")
 
     show_stock_location = fields.Selection(string='Show Stock Of',readonly=False, related="pos_config_id.show_stock_location")
 
     stock_location_id = fields.Many2one(
         'stock.location', string='Stock Location',
         domain=[('usage', '=', 'internal')], required=True, related="pos_config_id.stock_location_id",readonly=False)
+    stock_position = fields.Selection(related="pos_config_id.stock_position", readonly=False,string='Stock Position',required=True)
+    color_background = fields.Char(string='Background Color',readonly=False,related="pos_config_id.color_background")
+    font_background = fields.Char(string='Font Color',readonly=False,related="pos_config_id.font_background")
+    low_stock = fields.Float(string='Product Low Stock',readonly=False,related="pos_config_id.low_stock")
 
 
 
@@ -63,7 +74,6 @@ class pos_order(models.Model):
 
 class stock_quant(models.Model):
     _inherit = 'stock.move'
-
 
 
     @api.model
@@ -94,12 +104,10 @@ class stock_quant(models.Model):
         return True
 
 
-    @api.model
-    def create(self, vals):
-        res = super(stock_quant, self).create(vals)
-
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super(stock_quant, self).create(vals_list)
         notifications = []
-
         for rec in res:
             rec.sync_product(rec.product_id.id)
         return res
@@ -117,6 +125,15 @@ class ProductInherit(models.Model):
 
     quant_text = fields.Text('Quant Qty', compute='_compute_avail_locations', store=True)
 
+
+    def get_low_stock_products(self,low_stock):
+        products=self.search([('detailed_type', '=' ,'product')]);
+        product_list=[]
+        for product in products:
+            if product.qty_available <= low_stock:
+                product_list.append(product.id)
+        return product_list
+
     @api.depends('stock_quant_ids', 'stock_quant_ids.product_id', 'stock_quant_ids.location_id',
                  'stock_quant_ids.quantity')
     def _compute_avail_locations(self):
@@ -127,14 +144,6 @@ class ProductInherit(models.Model):
             if rec.type == 'product':
                 quants = self.env['stock.quant'].sudo().search(
                     [('product_id', 'in', rec.ids), ('location_id.usage', '=', 'internal')])
-                outgoing = self.env['stock.move'].sudo().search(
-                    [('product_id', '=', rec.id), ('state', 'not in', ['done']),
-                     ('location_id.usage', '=', 'internal'),
-                     ('picking_id.picking_type_code', 'in', ['outgoing'])])
-                incoming = self.env['stock.move'].sudo().search(
-                    [('product_id', '=', rec.id), ('state', 'not in', ['done']),
-                     ('location_dest_id.usage', '=', 'internal'),
-                     ('picking_id.picking_type_code', 'in', ['incoming'])])
                 for quant in quants:
                     loc = quant.location_id.id
                     if loc in final_data:
@@ -142,23 +151,6 @@ class ProductInherit(models.Model):
                         final_data[loc][0] = last_qty + quant.quantity
                     else:
                         final_data[loc] = [quant.quantity, 0, 0]
-
-                for out in outgoing:
-                    loc = out.location_id.id
-                    if loc in final_data:
-                        last_qty = final_data[loc][1]
-                        final_data[loc][1] = last_qty + out.product_qty
-                    else:
-                        final_data[loc] = [0, out.product_qty, 0]
-
-                for inc in incoming:
-                    loc = inc.location_dest_id.id
-                    if loc in final_data:
-                        last_qty = final_data[loc][2]
-                        final_data[loc][2] = last_qty + inc.product_qty
-                    else:
-                        final_data[loc] = [0, 0, inc.product_qty]
-
                 rec.quant_text = json.dumps(final_data)
         return True
 

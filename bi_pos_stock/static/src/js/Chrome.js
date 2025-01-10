@@ -6,10 +6,6 @@ odoo.define('bi_pos_stock.Chrome', function(require) {
 
 	const BiChrome = (Chrome) =>
 		class extends Chrome {
-			setup() {
-	            super.setup();
-	        }
-
 			get is_stock_sync() {
 				if(this.env && this.env.pos && this.env.pos.config && this.env.pos.config.show_stock_location == 'specific'){
 					return true

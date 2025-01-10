@@ -4,6 +4,7 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 
 	const Registries = require('point_of_sale.Registries');
 	const ProductScreen = require('point_of_sale.ProductScreen');
+	const { useListener } = require("@web/core/utils/hooks");
 
 	const BiProductScreen = (ProductScreen) =>
 		class extends ProductScreen {
@@ -14,13 +15,13 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 			async _clickProduct(event) {
 				let self = this;
 				const product = event.detail;
-				let allow_order = self.env.pos.config.pos_allow_order;
+				let allow_order = self.env.pos.config.allow_order;
 				let pos_config = self.env.pos.config;
-				let deny_order= self.env.pos.config.pos_deny_order || 0;
+				let deny_order= self.env.pos.config.deny_order || 0;
 				let call_super = true;
-				if(self.env.pos.config.pos_display_stock && product.type == 'product'){
+				if(self.env.pos.config.display_stock && product.type == 'product'){
 					if (allow_order == false){
-						if (pos_config.pos_stock_type == 'onhand'){
+						if (pos_config.stock_type == 'onhand'){
 							if ( product.bi_on_hand <= 0 ){
 								call_super = false;
 								self.showPopup('ErrorPopup', {
@@ -29,25 +30,7 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 								});
 							}
 						}
-						if (pos_config.pos_stock_type == 'incoming'){
-							if ( product.incoming_qty <= 0 ){
-								call_super = false;
-								self.showPopup('ErrorPopup', {
-									title: self.env._t('Deny Order'),
-									body: self.env._t("Deny Order" + "(" + product.display_name + ")" + " is Out of Stock."),
-								});
-							}
-						}
-						if (pos_config.pos_stock_type == 'outgoing'){
-							if ( product.outgoing_qty <= 0 ){
-								call_super = false;
-								self.showPopup('ErrorPopup', {
-									title: self.env._t('Deny Order'),
-									body: self.env._t("Deny Order" + "(" + product.display_name + ")" + " is Out of Stock."),
-								});
-							}
-						}
-						if (pos_config.pos_stock_type == 'available'){
+						if (pos_config.stock_type == 'available'){
 							if ( product.bi_available <= 0 ){
 								call_super = false;
 								self.showPopup('ErrorPopup', {
@@ -57,7 +40,7 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 							}
 						}
 					}else{
-						if (pos_config.pos_stock_type == 'onhand'){
+						if (pos_config.stock_type == 'onhand'){
 							if ( product.bi_on_hand <= deny_order ){
 								call_super = false;
 								self.showPopup('ErrorPopup', {
@@ -66,25 +49,7 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 								});
 							}
 						}
-						if (pos_config.pos_stock_type == 'incoming'){
-							if ( product.incoming_qty <= deny_order ){
-								call_super = false;
-								self.showPopup('ErrorPopup', {
-									title: self.env._t('Deny Order'),
-									body: self.env._t("Deny Order" + "(" + product.display_name + ")" + " is Out of Stock."),
-								});
-							}
-						}
-						if (pos_config.pos_stock_type == 'outgoing'){
-							if ( product.outgoing_qty <= deny_order ){
-								call_super = false;
-								self.showPopup('ErrorPopup', {
-									title: self.env._t('Deny Order'),
-									body: self.env._t("Deny Order" + "(" + product.display_name + ")" + " is Out of Stock."),
-								});
-							}
-						}
-						if (pos_config.pos_stock_type == 'available'){
+						if (pos_config.stock_type == 'available'){
 							if ( product.bi_available <= deny_order ){
 								call_super = false;
 								self.showPopup('ErrorPopup', {
@@ -105,15 +70,17 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 				let order = this.env.pos.get_order();
 				let lines = order.get_orderlines();
 				let pos_config = self.env.pos.config;
-				let allow_order = pos_config.pos_allow_order;
-				let deny_order= pos_config.pos_deny_order || 0;
+				let allow_order = pos_config.allow_order;
+				let deny_order= pos_config.deny_order || 0;
 				let call_super = true;
-				if(pos_config.pos_display_stock){
+				var interval = order.interval;
+				clearInterval(interval);
+				if(pos_config.display_stock){
 					let prod_used_qty = {};
 					$.each(lines, function( i, line ){
 						let prd = line.product;
 						if (prd.type == 'product'){
-							if(pos_config.pos_stock_type == 'onhand'){
+							if(pos_config.stock_type == 'onhand'){
 								if(prd.id in prod_used_qty){
 									let old_qty = prod_used_qty[prd.id][1];
 									prod_used_qty[prd.id] = [prd.bi_on_hand,line.quantity+old_qty]
@@ -121,24 +88,7 @@ odoo.define('bi_pos_stock.productScreen', function(require) {
 									prod_used_qty[prd.id] = [prd.bi_on_hand,line.quantity]
 								}
 							}
-							if(pos_config.pos_stock_type == 'incoming'){
-								if(prd.id in prod_used_qty){
-									let old_qty = prod_used_qty[prd.id][1];
-									prod_used_qty[prd.id] = [prd.incoming_qty,line.quantity+old_qty]
-								}else{
-									prod_used_qty[prd.id] = [prd.incoming_qty,line.quantity]
-								}	
-							}
-							if(pos_config.pos_stock_type == 'outgoing'){
-
-								if(prd.id in prod_used_qty){
-									let old_qty = prod_used_qty[prd.id][1];
-									prod_used_qty[prd.id] = [prd.outgoing_qty,line.quantity]
-								}else{
-									prod_used_qty[prd.id] = [prd.outgoing_qty,line.quantity]
-								}	
-							}
-							if(pos_config.pos_stock_type == 'available'){
+							if(pos_config.stock_type == 'available'){
 								if(prd.id in prod_used_qty){
 									let old_qty = prod_used_qty[prd.id][1];
 									prod_used_qty[prd.id] = [prd.bi_available,line.quantity+old_qty]

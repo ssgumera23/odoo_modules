@@ -22,9 +22,99 @@ odoo.define('bi_pos_stock.ProductsWidget', function(require) {
 
 			_mounted() {
 				var self = this;
+				self.change_css();
+				let config = self.env.pos.config;
+				let color_background = config.color_background;
+				let font_color = config.font_background;
+				if(config.stock_type == 'onhand' || config.stock_type == 'available'){
+					if (config.stock_position == 'top_left'){
+						if(color_background){
+							$('.qty-left-label').css('background-color', color_background);
+							$('.qty-left-label').css('color', font_color);
+							$('.qty-image-label').css('background-color', color_background);
+							$('.qty-image-label').css('color', font_color);
+						}
+						else{
+							$('.qty-left-label').css('background-color', "#4caf50");
+							$('.qty-left-label').css('color', "#ffffff");
+							$('.qty-image-label').css('background-color', "#4caf50");
+							$('.qty-image-label').css('color', "#ffffff");
+						}
+					}
+					if (config.stock_position == 'top_right'){
+						if(color_background){
+							$('.qty-tright-label').css('background-color', color_background);
+							$('.qty-tright-label').css('color', font_color);
+						}
+						else{
+							$('.qty-tright-label').css('background-color', "#4caf50");
+							$('.qty-tright-label').css('color', "#ffffff");
+						}
+					}
+					if (config.stock_position == 'bottom_right'){
+						if(color_background){
+							$('.qty-bright-label').css('background-color', color_background);
+							$('.qty-bright-label').css('color', font_color);
+						}
+						else{
+							$('.qty-bright-label').css('background-color', "4caf50");
+							$('.qty-bright-label').css('color', "ffffff");
+						}
+					}
+				}
 				self.env.services['bus_service'].addEventListener('notification', ({ detail: notifications }) => {
 					self.syncProdData(notifications);
 				});
+			}
+			change_css(){
+				var self = this;
+				let order=self.env.pos.get_order();
+				if(order){
+					var interval = setInterval(function () {
+						self.interval = interval;
+						order.set_interval(interval)
+						let config = self.env.pos.config;
+						let color_background = config.color_background;
+						let font_color = config.font_background;
+						if(config.stock_type == 'onhand' || config.stock_type == 'available'){
+							if (config.stock_position == 'top_left'){
+								if(color_background){
+									$('.qty-left-label').css('background-color', color_background);
+									$('.qty-left-label').css('color', font_color);
+									$('.qty-image-label').css('background-color', color_background);
+									$('.qty-image-label').css('color', font_color);
+								}
+								else{
+									$('.qty-left-label').css('background-color', "#4caf50");
+									$('.qty-left-label').css('color', "#ffffff");
+									$('.qty-image-label').css('background-color', "#4caf50");
+									$('.qty-image-label').css('color', "#ffffff");
+								}
+							}
+							if (config.stock_position == 'top_right'){
+								if(color_background){
+									$('.qty-tright-label').css('background-color', color_background);
+									$('.qty-tright-label').css('color', font_color);
+								}
+								else{
+									$('.qty-tright-label').css('background-color', "#4caf50");
+									$('.qty-tright-label').css('color', "#ffffff");
+								}
+							}
+							if (config.stock_position == 'bottom_right'){
+								if(color_background){
+									$('.qty-bright-label').css('background-color', color_background);
+									$('.qty-bright-label').css('color', font_color);
+								}
+								else{
+									$('.qty-bright-label').css('background-color', "4caf50");
+									$('.qty-bright-label').css('color', "ffffff");
+								}
+							}
+						}
+					},1200)
+				}
+				
 			}
 
 			syncProdData(notifications){
@@ -111,8 +201,47 @@ odoo.define('bi_pos_stock.ProductsWidget', function(require) {
 				let self = this;
 				let prods = super.productsToDisplay;
 				let location = this.env.pos.custom_stock_locations;
+				let config = self.env.pos.config;
+				let color_background = config.color_background;
+				let font_color = config.font_background;
+				if(config.stock_type == 'onhand' || config.stock_type == 'available'){
+					if (config.stock_position == 'top_left'){
+						if(color_background){
+							$('.qty-left-label').css('background-color', color_background);
+							$('.qty-left-label').css('color', font_color);
+							$('.qty-image-label').css('background-color', color_background);
+							$('.qty-image-label').css('color', font_color);
+						}
+						else{
+							$('.qty-left-label').css('background-color', "#4caf50");
+							$('.qty-left-label').css('color', "#ffffff");
+							$('.qty-image-label').css('background-color', "#4caf50");
+							$('.qty-image-label').css('color', "#ffffff");
+						}
+					}
+					if (config.stock_position == 'top_right'){
+						if(color_background){
+							$('.qty-tright-label').css('background-color', color_background);
+							$('.qty-tright-label').css('color', font_color);
+						}
+						else{
+							$('.qty-tright-label').css('background-color', "#4caf50");
+							$('.qty-tright-label').css('color', "#ffffff");
+						}
+					}
+					if (config.stock_position == 'bottom_right'){
+						if(color_background){
+							$('.qty-bright-label').css('background-color', color_background);
+							$('.qty-bright-label').css('color', font_color);
+						}
+						else{
+							$('.qty-bright-label').css('background-color', "4caf50");
+							$('.qty-bright-label').css('color', "ffffff");
+						}
+					}
+				}
 				if (self.env.pos.config.show_stock_location == 'specific'){
-					if (self.env.pos.config.pos_stock_type == 'onhand'){
+					if (self.env.pos.config.stock_type == 'onhand'){
 						$.each(prods, function( i, prd ){
 							prd['bi_on_hand'] = 0;
 							let loc_onhand = JSON.parse(prd.quant_text);
@@ -124,7 +253,7 @@ odoo.define('bi_pos_stock.ProductsWidget', function(require) {
 						});
 						this.env.pos.synch.is_sync = false
 					}
-					if (self.env.pos.config.pos_stock_type == 'available'){
+					if (self.env.pos.config.stock_type == 'available'){
 						$.each(prods, function( i, prd ){
 							let loc_available = JSON.parse(prd.quant_text);
 							prd['bi_available'] = 0;
