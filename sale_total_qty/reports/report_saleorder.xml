@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cloverent16_report_saleorder" inherit_id="sale.report_saleorder_document">
+        <xpath expr="////div[hasclass('clearfix')]/div/div/table" position="inside">
+            <table class="table table-sm table-borderless">
+                <tr>
+                    <td><strong>Total Quantity</strong></td>
+                    <td align="right"><span t-field="doc.total_sale_qty"/> Pieces</td>
+                </tr>
+            </table>
+        </xpath>
+    </template>
+</odoo>

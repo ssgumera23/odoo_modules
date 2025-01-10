@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="order_line" position="after">
+                    <span>Total Quantity: </span><field name="total_sale_qty"/><span> Pieces</span>
+                </field>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_open': False, 'no_create': True, 'no_quick_create': True,
+                        'no_create_edit': True}
+                    </attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_template_id']" position="attributes">
+                    <attribute name="options">{'no_open': False, 'no_create': True, 'no_quick_create': True,
+                        'no_create_edit': True}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

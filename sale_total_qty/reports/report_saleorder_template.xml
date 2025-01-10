@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document">
+        <t t-call="web.basic_layout">
+            <header>
+                <div>
+                    <center>
+                        <p>
+                            <font face="Verdana">
+                                <h2>INDIGO DISTRIBUTION CORPORATION</h2>
+                                <br/>
+                                The Venue Bldg., Unit 201-A Lot C-5 Commercial Area, Subic Gateway Park, Phase I,
+                                <br/>
+                                <br/>
+                                Subic Bay Freeport Zone, Zambales, Philippines 2222
+                                <br/>
+                                <br/>
+                                VAT Registered TIN: 004-076-216
+                                <br/>
+                                <br/>
+                            </font>
+                        </p>
+                    </center>
+                </div>
+            </header>
+            <table width="100%" class="table-borderless">
+                <tr>
+                    <td colspan="2" width="50%" style="font-size:25px;">SALES ORDER</td>
+                    <td width="20%" style="font-size:25px;"></td>
+                    <td width="30%" style="font-size:25px;">No.
+                        <span t-field="doc.name" style="color:red;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="text-end" style="font-size:20px;"></td>
+                    <td width="35%" style="font-size:20px;"></td>
+                    <td width="20%" class="text-end" style="font-size:20px;">Date:</td>
+                    <td width="30%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="text-end" style="font-size:20px;">SOLD TO:</td>
+                    <td width="35%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <span t-field="doc.partner_id"/>
+                    </td>
+                    <td width="20%" class="text-end" style="font-size:20px;">TERMS:</td>
+                    <td width="30%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <span t-field="doc.payment_term_id.name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="text-end" style="font-size:20px;">TIN:</td>
+                    <td width="35%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <span t-field="doc.company_id.vat"/>
+                    </td>
+                    <td width="20%" class="text-end" style="font-size:20px;">SALESMAN:</td>
+                    <td width="30%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <span t-field="doc.user_id"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="15%" class="text-end" style="font-size:20px;">ADDRESS:</td>
+                    <td width="35%" style="font-size:20px; border-bottom:1pt solid black;">
+                        <span t-field="doc.partner_id.street"/>
+                        <span t-field="doc.partner_id.street2"/>
+                        <span t-field="doc.partner_id.city"/>
+                    </td>
+                    <td width="20%" class="text-end" style="font-size:20px;">CARD HOLDER'S SIGN:</td>
+                    <td width="30%" style="font-size:20px; border-bottom:1pt solid black;"></td>
+                </tr>
+                <tr>
+                    <td width="15%" style="font-size:20px;"></td>
+                    <td width="35%" style="font-size:20px;"></td>
+                    <td width="20%" style="font-size:20px;"></td>
+                    <td width="30%" style="font-size:20px;"></td>
+                </tr>
+                <tr>
+                    <td width="15%" class="text-end" style="font-size:20px;">BUSINESS STYLE:</td>
+                    <td width="35%" style="font-size:20px; border-bottom:1pt solid black;"></td>
+                    <td width="20%" style="font-size:20px;"></td>
+                    <td width="30%" style="font-size:20px;"></td>
+                </tr>
+            </table>
+            <br/>
+            <t t-set="lines_to_report" t-value="doc._get_order_lines_to_report()"/>
+            <table width="100%">
+                <tr style="font-size:25px;" align="center">
+                    <td colspan="2" width="50%">ARTICLES</td>
+                    <td width="10%">QTY.</td>
+                    <td width="10%">UNIT</td>
+                    <td width="15%">UNIT PRICE</td>
+                    <td width="15%">AMOUNT</td>
+                </tr>
+
+                <t t-foreach="lines_to_report" t-as="line">
+                    <tr style="font-size:20px;">
+                        <td colspan="2" name="td_name">
+                            <span t-field="line.name"/>
+                        </td>
+                        <td name="td_quantity" class="text-end">
+                            <span t-field="line.product_uom_qty" t-options='{"widget": "float", "precision": 0}'/>
+                        </td>
+                        <td name="td_uom" class="text-end">
+                            <span t-field="line.product_uom"/>
+                        </td>
+                        <td name="td_priceunit" class="text-end">
+                            <span t-field="doc.currency_id.symbol"/>
+                            <span t-field="line.price_unit"/>
+                        </td>
+                        <td name="td_subtotal" class="text-end">
+                            <span t-field="line.price_subtotal"/>
+                        </td>
+                    </tr>
+                </t>
+                <tr style="font-size:20px;">
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total Sales(Vat Inclusive)</td>
+                    <td class="text-end">
+                        <span t-field="doc.currency_id.symbol"/>
+                        <span t-field="doc.total_sales_vat_inc" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Less VAT</td>
+                    <td class="text-end">
+                        <span t-field="doc.amount_untaxed"/>
+                    </td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td width="25%">Vatable Sales</td>
+                    <td width="25%"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Amount Net of VAT</td>
+                    <td>
+                    </td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td width="25%">VAT Excempt Sales</td>
+                    <td width="25%"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Amount Due</td>
+                    <td></td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td width="25%">Zero Rated Sales</td>
+                    <td width="25%"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Add: VAT</td>
+                    <td class="text-end">
+                        <span t-field="doc.amount_tax"/>
+                    </td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td width="25%">VAT Amount</td>
+                    <td width="25%"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr style="font-size:20px;">
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                    <td>
+                        Total Quantity:
+                        <span t-field="doc.total_sale_qty" t-options='{"widget": "float", "precision": 0}'/>
+                    </td>
+                    <td></td>
+                    <td>Total Amount Due</td>
+                    <td class="text-end">
+                        <span t-field="doc.amount_total"/>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table width="100%" style="font-size:20px;" class="table-borderless">
+                <tr>
+                    <td width="25%" style="border-bottom:1pt solid black;">Prepared by:
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                    <td width="25%"></td>
+                    <td width="25%" style="border-bottom:1pt solid black;">Checked by:
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                    <td width="25%" rowspan="2">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="25%" style="border-bottom:1pt solid black;">Approved by:
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                    <td width="25%"></td>
+                    <td width="25%" style="border-bottom:1pt solid black;">Released by:
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="25%" style="border-bottom:1pt solid black;">
+                        Cashier/Authorized Representative
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                </tr>
+                <tr>
+                    <td width="25%"></td>
+                    <td width="25%"></td>
+                    <td width="50%" colspan="2" align="center" style="border-top:1pt solid black;">
+                        Customer Signature Over Printed Name
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="right">THIS INVOICE SHALL BE VALID FOR FIVE(5) YEARS FROM THE
+                        DATE OF ATP
+                    </td>
+                </tr>
+            </table>
+        </t>
+    </template>
+
+
+    <template id="report_saleorder_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="sale_total_qty.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_custom" model="report.paperformat">
+        <field name="name">Custom Paper</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">297</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10.00</field>
+        <field name="margin_bottom">10.00</field>
+        <field name="margin_left">7.0</field>
+        <field name="margin_right">7.0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">125</field>
+    </record>
+
+    <record id="action_report_saleorder" model="ir.actions.report">
+        <field name="name">Quotation / Order (Custom)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_total_qty.report_saleorder_template</field>
+        <field name="report_file">sale_total_qty.report_saleorder_template</field>
+        <field name="print_report_name">'Sale Order - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="sale_total_qty.paperformat_custom"/>
+    </record>
+
+</odoo>
