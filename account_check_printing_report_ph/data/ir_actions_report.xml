@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record id="action_report_check_ph" model="ir.actions.report">
+            <field name="name">PH Bank Check</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_check_printing_report_ph.print_check_ph</field>
+            <field name="report_file">account_check_printing_report_ph.print_check_ph</field>
+            <field name="print_report_name">'PH Check - %s' % (object.partner_id.name or '',)</field>
+            <field name="paperformat_id" ref="account_check_printing_report_ph.paperformat_check_ph"/>
+            <field name="attachment">'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_top.pdf'</field>
+            <field name="attachment_use">True</field>
+        </record>
+        
+        <record id="action_report_check_ph_corp" model="ir.actions.report">
+            <field name="name">PH Bank Check - Corporate</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_check_printing_report_ph.print_check_ph_corp</field>
+            <field name="report_file">account_check_printing_report_ph.print_check_ph_corp</field>
+            <field name="print_report_name">'PH Check - %s' % (object.partner_id.name or '',)</field>
+            <field name="paperformat_id" ref="account_check_printing_report_ph.paperformat_check_ph_corp"/>
+            <field name="attachment">'check_'+(object.partner_id and object.partner_id.name or 'Internal')+'_'+(object.name)+'_top.pdf'</field>
+            <field name="attachment_use">True</field>
+        </record>
+
+    </data>
+</odoo>

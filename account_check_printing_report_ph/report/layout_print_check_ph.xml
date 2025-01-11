@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+
+    <template id="layout_print_check_ph">
+        <div class="layout_print_check_ph">
+            <t t-if="page['state'] == 'cancelled'">
+                <div class="o-watermark">VOID</div>
+            </t>
+            <div class="page">
+                <div class="oe_structure" />
+                <t t-call="account_check_printing_report_ph.layout_dates_old" />
+                <t t-call="account_check_printing_report_ph.layout_parts_payee" />
+                <t t-call="account_check_printing_report_ph.layout_parts_amount_in_words" />
+            </div>
+        </div>
+    </template>
+
+    <template id="layout_print_check_ph_corp">
+        <div class="layout_print_check_ph_corp">
+            <t t-if="page['state'] == 'cancelled'">
+                <div class="o-watermark">VOID</div>
+            </t>
+            <div class="page">
+                <div class="oe_structure"/>
+                <t t-call="account_check_printing_report_ph.layout_dates_new" />
+                <t t-call="account_check_printing_report_ph.layout_parts_payee" />
+                <t t-call="account_check_printing_report_ph.layout_parts_amount_in_words" />
+            </div>
+        </div>
+    </template>
+
+
+</data>
+</odoo>

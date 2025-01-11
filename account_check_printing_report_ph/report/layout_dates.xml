@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <template id="layout_dates_old">
+        <div class="row mb16 mt32" style="padding-top: 12mm;">
+            <div class="col-9">
+            </div>
+            <div class="col-3" style="margin-left: 4mm;">
+                <t t-if="o.check_date_override is True">
+                    <strong t-out="o.check_date_override.strftime('%B %d, %Y')" style="text-transform: capitalize;" />
+                </t>
+                <t t-else="">
+                    <strong t-out="o.date.strftime('%B %d, %Y')" style="text-transform: capitalize;" />    
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="layout_dates_new">
+        <div class="row mb16 mt32" style="padding-top: 12mm;">
+            <div class="col-8">
+            </div>
+            <div class="col-4" style="margin-top: -4mm; padding-left: 16mm;">
+                <t t-if="o.check_date_override is True">
+                    <strong t-out="o.check_date_override.strftime('%m')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2mm; margin-right: 3mm;"/>
+                    <strong t-out="o.check_date_override.strftime('%d')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2.5mm; margin-right: 2.5mm;"/>
+                    <strong t-out="o.check_date_override.strftime('%Y')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2.5mm;"/>
+                </t>
+                <t t-else="">
+                    <strong t-out="o.date.strftime('%m')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2mm; margin-right: 3mm;"/>
+                    <strong t-out="o.date.strftime('%d')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2.5mm; margin-right: 2.5mm;"/>
+                    <strong t-out="o.date.strftime('%Y')" style="text-transform: capitalize; font-size: 20px; letter-spacing: 2.5mm;"/>
+                </t>
+            </div>
+        </div>
+    </template>
+
+</data>
+</odoo>
