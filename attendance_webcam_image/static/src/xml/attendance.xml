@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template xml:space="preserve">
+
+    <t t-extend="HrAttendanceMyMainMenu">
+       <t t-jquery="t[t-set='bodyContent'] div.flex-grow-1" t-operation="after">
+            <div id="a_video_source" class="row d-none">
+                <div class="col-3"></div>
+                <div class="col-6 controls">
+                    <fieldset class="reader-config-group">
+                        <label><h6>Select Camera</h6></label>                    
+                        <select name="video_source" class="videoSource" id="a_video_select">
+                        </select>
+                    </fieldset>
+                </div>
+                <div class="col-3"></div>
+            </div>
+            <div id="a_webcam" class="d-none">
+                <video id="a_video" autoplay="1" muted="1" playsinline="1"></video>
+                <canvas id="a_image" style="display: none;"/>
+            </div>
+       </t>
+    </t>
+    <t t-extend="HrAttendanceKioskConfirm">
+        <t t-jquery="t[t-if='!widget.use_pin']" t-operation="before">
+            <div id="a_video_source" class="row d-none">
+                <div class="col-3"></div>
+                <div class="col-6 controls">
+                    <fieldset class="reader-config-group">
+                        <label><h6>Select Camera</h6></label>                    
+                        <select name="video_source" class="videoSource" id="a_video_select">
+                        </select>
+                    </fieldset>
+                </div>
+                <div class="col-3"></div>
+            </div>
+            <div id="a_webcam" class="d-none">
+                <video id="a_video" autoplay="1" muted="1" playsinline="1"/>
+                <canvas id="a_image" style="display: none;"/>
+            </div>
+       </t>
+    </t>
+
+</template>
