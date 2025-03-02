@@ -5,7 +5,7 @@
 {
     'name': 'Philippines Country States',
     'category': 'Localisation',
-    'version': '12.0.1.0',
+    'version': '17.0',
     'author': 'Piotr Cierkosz',
     'data': [
         'data/res_country_states.xml',
