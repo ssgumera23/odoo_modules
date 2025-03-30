@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <record id="account_report_form" model="ir.ui.view">
+        <field name="name">account.report.form</field>
+        <field name="model">account.report</field>
+        <field name="inherit_id" ref="account_reports.account_report_form"/>
+        <field name="arch" type="xml">
+            <field name="filter_partner" position="after">
+                <field name="filter_salesperson"/>
+            </field>
+        </field>
+    </record>
+
+        <template id="search_template_salesperson">
+            <button t-if="options.get('salesperson')" type="button"
+                    class="o-no-caret btn btn-secondary dropdown-toggle salesperson_filter_changed"
+                    data-bs-toggle="dropdown">
+                <span class="fa fa-folder-open"/>
+                Sales Persons
+            </button>
+            <ul class="dropdown-menu o_filter_menu" role="menu">
+                <li class="o_account_report_search js_account_salesperson_m2m"/>
+            </ul>
+        </template>
+
+        <template id="salesperson_search_template" inherit_id="account_reports.search_template">
+            <xpath expr="//div[hasclass('btn-group', 'dropdown' ,'o_account_reports_filter_partner')]"
+                   position="after">
+
+                <div class="btn-group o_dropdown o_account_reports_filter_salesperson"
+                     t-if="options.get('salesperson')">
+                    <t t-call="ctx_aged_receivable_salesperson.search_template_salesperson"/>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
